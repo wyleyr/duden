@@ -166,8 +166,12 @@ class DudenWord():
         Return the part of speech
         """
         try:
-            pos_div = self._section_main_get_node('Wortart:')
-            return pos_div.strong.text
+            # the Wortart is in a definition list in the main section;
+            # the help link seems to be the easiest way to identify it
+            # on the page:
+            link = self.soup.main.article.find('a', href='/hilfe/wortart')
+            # wortart is in the corresponding <dd>:
+            return link.parent.find_next_sibling('dd').text 
         except AttributeError:
             return None
 
