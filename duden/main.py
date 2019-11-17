@@ -184,9 +184,13 @@ class DudenWord():
         5 - most frequent
         """
         try:
-            pos_div = self._section_main_get_node(
-                'Häufigkeit:', use_label=False)
-            return pos_div.strong.text.count('▮')
+            # as with part_of_speech, the help link in the main
+            # section seems to be the easiest way to identify the dl
+            # containing the frequency:
+            link = self.soup.main.article.find('a', href='/hilfe/haeufigkeit')
+            dd = link.parent.find_next_sibling('dd')
+            bars = dd.div.find('span', class_='shaft__full')
+            return len(bars.text)
         except AttributeError:
             return None
 
