@@ -231,10 +231,8 @@ class DudenWord():
         Return the word separated in a form of a list
         """
         try:
-            section = self._find_section('Rechtschreibung')
-            div = self._section_other_get_div('Worttrennung:', section,
-                                              use_label=False)
-            return div.find('span', class_='lexem').text.split('|')
+            div = self._find_section('Rechtschreibung')
+            return div.dl.dd.text.split('|')
         except AttributeError:
             pass
 
