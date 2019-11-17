@@ -210,6 +210,12 @@ class DudenWord():
 
         If no matching section is found, None is returned.
         """
+        # the main divisions on the page can be looked up by ID:
+        # Rechtschreibung, Bedeutungen, etc.
+        div = self.soup.find('div', id=name.lower())
+        if div:
+            return div
+
         for section in self.soup.find_all('section'):
             if section.h2:
                 if name == section.h2.text:
