@@ -30,8 +30,8 @@ from .common import (recursively_extract, print_tree_of_strings,
 from .__version__ import __version__
 
 
-URL_FORM = 'http://www.duden.de/rechtschreibung/{word}'
-SEARCH_URL_FORM = 'http://www.duden.de/suchen/dudenonline/{word}'
+URL_FORM = 'https://www.duden.de/rechtschreibung/{word}'
+SEARCH_URL_FORM = 'https://www.duden.de/suchen/dudenonline/{word}'
 
 # grammar forms constants
 SINGULAR = 'Singular'
