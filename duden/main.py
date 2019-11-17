@@ -239,11 +239,9 @@ class DudenWord():
         # If the word_separation was not found in the Rechtschreibung section
         # we try it again in the main section (see e.g. word 'Qat').
         try:
-            div = self._section_main_get_node('Worttrennung:')
-            div = copy.copy(div)
-            label = div.find('span', class_='label')
-            label.extract()
-            return div.text.strip().split('|')
+            article = self.soup.main.article
+            dt = article.find('dt', text='Worttrennung')
+            return dt.nextSibling.text.strip().split('|')
         except AttributeError:
             return None
 
