@@ -286,7 +286,7 @@ class DudenWord():
         Return the structure with word synonyms
         """
         try:
-            section = self._find_section('Synonyme zu', approximate=True)
+            section = self._find_section('Synonyme')
             section = copy.copy(section)
             if section.header:
                 section.header.extract()
