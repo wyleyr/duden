@@ -255,7 +255,7 @@ class DudenWord():
         Return the meaning structure, which can be string, list or a dict
         """
         try:
-            section = self._find_section('Bedeutungsübersicht')
+            section = self._find_section('Bedeutungen')
         except AttributeError:
             return None
 
