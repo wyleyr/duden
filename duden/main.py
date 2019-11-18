@@ -101,9 +101,9 @@ class DudenWord():
             print(white(_('Synonyms:'), bold=True))
             print_tree_of_strings(self.synonyms)
 
-        if self.compounds:
-            print(white(_('Typical compounds:'), bold=True))
-            for part_of_speech, words in self.compounds.items():
+        if self.connections:
+            print(white(_('Typical connections:'), bold=True))
+            for part_of_speech, words in self.connections.items():
                 print(blue(' - {}:'.format(part_of_speech.capitalize())),
                       ', '.join(words))
 
@@ -310,9 +310,9 @@ class DudenWord():
         return section.text
 
     @property
-    def compounds(self):
+    def connections(self):
         """
-        Return the typical word compounds
+        Return the typical word connections
         """
         section = self._find_section('kontext')
         if not section:
@@ -531,8 +531,8 @@ def parse_args():
                         help=_('list synonyms (line separated)'))
     parser.add_argument('--origin', action='store_true',
                         help=_('display origin'))
-    parser.add_argument('--compounds', nargs='?', const='ALL',
-                        help=_('list common compounds'))
+    parser.add_argument('--connections', nargs='?', const='ALL',
+                        help=_('list common connections'))
     parser.add_argument('-g', '--grammar', nargs='?', const='ALL',
                         help=_('list grammar forms'))
 
@@ -578,15 +578,15 @@ def display_word(word, args):
     elif args.origin:
         if word.origin:
             print(word.origin)
-    elif args.compounds:
-        if word.compounds:
-            if args.compounds == 'ALL':
-                for part_of_speech, compounds in word.compounds.items():
+    elif args.connections:
+        if word.connections:
+            if args.connections == 'ALL':
+                for part_of_speech, connections in word.connections.items():
                     print(white('# ' + part_of_speech.capitalize(), bold=True))
-                    print_string_or_list(compounds)
+                    print_string_or_list(connections)
                     print()
             else:
-                print_string_or_list(word.compounds[args.compounds])
+                print_string_or_list(word.connections[args.connections])
     elif args.grammar:
         display_grammar(word, args.grammar)
     else:
