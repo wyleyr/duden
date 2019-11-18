@@ -63,7 +63,7 @@ gettext.install('duden', os.path.join(os.path.dirname(__file__), 'locale'))
 
 class DudenWord():
 
-    wordcloud_parts_of_speech = ['substantive', 'verben', 'adjektive']
+    wordcloud_parts_of_speech = ['adj', 'verb', 'noun']
 
     def __init__(self, soup):
         self.soup = soup
@@ -314,16 +314,15 @@ class DudenWord():
         """
         Return the typical word compounds
         """
-        section = self._find_section('Typische Verbindungen', approximate=True)
+        section = self._find_section('kontext')
         if not section:
             return None
 
         d = {}
         for pos in DudenWord.wordcloud_parts_of_speech:
-            word_cloud = section.find(id=pos)
+            word_cloud = section.figure.find_all('a', attrs={'data-group': pos})
             if word_cloud:
-                words = [a.text for a in word_cloud.find_all('a')] \
-                    if word_cloud else []
+                words = [a.text for a in word_cloud] if word_cloud else []
                 d[pos] = words
         return d
 
