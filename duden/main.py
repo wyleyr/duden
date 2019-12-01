@@ -347,13 +347,18 @@ class DudenWord():
         Find the Grammar sections in the document and extract tagged string
         list of all tables found there.
 
-        The concatinated tagged string list (for all tables) is returned
+        The concatenated tagged string list (for all tables) is returned
         """
         section = self._find_section('Grammatik')
         if not section:
             return None
 
         table_nodes = section.find_all('table')
+        if not table_nodes:
+            # occasionally there is a grammar section containing no
+            # tables (see e.g. 'scharf'), but we can't return anything
+            # useful in that case
+            return None
 
         tagged_strings = []
         for table_node in table_nodes:
@@ -396,18 +401,22 @@ class DudenWord():
         for row in table_node.tbody.find_all('tr'):
             if row.th:
                 left_header.append(clear_text(row.th.text))
+            else:
+                left_header.append(None) 
 
             tds = row.find_all('td')
             table_content.append([clear_text(td.text) for td in tds])
 
         if top_header and left_header:
-            table_name = top_header[0]
+            container_div = table_node.find_parent('div', attrs={'class': 'wrap-table'})
+            header = container_div.h3
+            table_name = header.text if header else top_header[0]
             top_header = top_header[1:]
 
         # sanitize missing cells
         last_nonempty_cell = ''
         for i, cell in enumerate(left_header):
-            if cell == '':
+            if cell == '' or cell == None:
                 left_header[i] = last_nonempty_cell
             else:
                 last_nonempty_cell = cell
@@ -600,7 +609,6 @@ def display_grammar(word, grammar_args):
         return
 
     grammar_tokens = [token.lower() for token in grammar_args.split(',')]
-
     table = []
     for keys, value in word.grammar_raw:
         lkeys = {key.lower() for key in keys}
@@ -620,8 +628,13 @@ def display_grammar(word, grammar_args):
 
 
 def display_table(table, cell_spacing=' '):
-    cols = list(zip(*table))
-    collens = [max(len(word) for word in col) for col in cols]
+    collens = [0 for col in table[0]]
+    for row in table:
+        for i, col in enumerate(row):
+            try:
+                collens[i] = max(collens[i], len(col))
+            except IndexError:
+                collens.append(len(col))
 
     for row in table:
         for elem, collen in zip(row, collens):
